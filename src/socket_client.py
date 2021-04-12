@@ -61,9 +61,9 @@ class ExerciseWidget(BaseWidget):
         self.anim_group.on_update()
         self.update_info_label()
 
-    def on_touch_move(self,touch):
+    def on_touch_down(self,touch):
         self.line.line.points=[200,200,touch.pos[0],touch.pos[1]]
-        send(str(touch.pos))
+        send(str((int(touch.pos[0]),int(touch.pos[1]))))
 
 
     def update_info_label(self):
@@ -75,14 +75,14 @@ class ExerciseWidget(BaseWidget):
 
 
 HEADER = 64
-PORT = 5052
+PORT = 11928
 # PORT = 16835
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 # SERVER = "192.168.1.26"
-SERVER = "LOCALHOST"
+# SERVER = "LOCALHOST"
 # SERVER = "3.134.125.175"
-# SERVER = "6.tcp.ngrok.io"
+SERVER = "8.tcp.ngrok.io"
 ADDR = (SERVER, PORT)
 received = [0,0]
     
@@ -97,11 +97,13 @@ def update_state(client,addr):
         
             # print(client.recv(2048).decode(FORMAT))
         msg = client.recv(2048).decode(FORMAT)
-        print(msg)
+        # print(msg)
             # print(current_state)
         if msg:
             global received
+            print(msg)
             received = eval(msg)
+            print(received)
         else:
             send(DISCONNECT_MESSAGE)
             run = False
@@ -111,7 +113,7 @@ thread = threading.Thread(target=update_state, args=(client, ADDR))
 thread.start()
 
 def send(msg):
-    print(msg)
+    # print(msg)
     message = msg.encode(FORMAT)
     msg_length = len(message)
     send_length = str(msg_length).encode(FORMAT)

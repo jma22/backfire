@@ -1,5 +1,6 @@
 import threading
 import socket
+from queue import Queue
 
 HEADER = 64
 PORT = 5052
@@ -24,12 +25,13 @@ def handle_client(conn, addr):
         if msg_length:
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
-            if msg == DISCONNECT_MESSAGE:
+            if msg == DISCONNECT_MESSAGE or not msg:
                 print("hi")
                 connected = False
                 global connections
                 connections.remove(conn)
             else:
+                # print(msg)
                 state_change(eval(msg))
 
             print(f"[{addr}] {msg}")
